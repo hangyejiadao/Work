@@ -68,6 +68,8 @@ namespace Helper
 
         }
 
+ 
+
 
 
         protected static string GetInsertSql<T>(T t) where T : Entity
@@ -78,7 +80,7 @@ namespace Helper
                 StringBuilder sbValues = new StringBuilder("(");
                 foreach (var item in typeof(T).GetProperties())
                 {
-                    
+
                     object[] obj = item.GetCustomAttributes(typeof(KeyAttribute), true);
                     if (obj.Length > 0)
                     {
@@ -88,7 +90,7 @@ namespace Helper
                             item.PropertyType.Name.Equals("Int16", StringComparison.OrdinalIgnoreCase) ||
                             item.PropertyType.Name.Equals("Int32", StringComparison.OrdinalIgnoreCase) ||
                             item.PropertyType.Name.Equals("Int64", StringComparison.OrdinalIgnoreCase) ||
-                            item.PropertyType.Name.Equals("long", StringComparison.OrdinalIgnoreCase) 
+                            item.PropertyType.Name.Equals("long", StringComparison.OrdinalIgnoreCase)
                             )
                         {
                             continue;
