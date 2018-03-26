@@ -12,6 +12,6 @@ namespace Model.BaseModel
         /// Guid主键
         /// </summary>
         [Key]
-         public new Guid Id { get; set; }
+        public new Guid Id { get; set; }
     }
 }
