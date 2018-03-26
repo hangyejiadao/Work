@@ -17,6 +17,14 @@ namespace Helper
 
 
 
+        public static async Task<bool> Add<T>(T t) where T : Entity, new()
+        {
+            return await Execute(SqlHelper.GetInsertSql<T>(t));
+        }
+
+
+
+
         public static async Task<bool> Execute(string sql)
         {
             SqlTransaction transaction = null;
@@ -37,7 +45,7 @@ namespace Helper
                     cmd.Connection = con;
                     cmd.Transaction = transaction;
                     cmd.CommandText = sql;
-                    int resl = cmd.ExecuteNonQuery();
+                    int resl = await cmd.ExecuteNonQueryAsync();
                     if (resl > 0)
                     {
                         transaction.Commit();
@@ -46,7 +54,7 @@ namespace Helper
                     else
                     {
                         transaction.Rollback();
-                        return false; 
+                        return false;
                     }
 
                 }
@@ -74,7 +82,8 @@ namespace Helper
                     object[] obj = item.GetCustomAttributes(typeof(KeyAttribute), true);
                     if (obj.Length > 0)
                     {
-                        if (item is int || item is Int32 || item is long || item is Int64 || item is Int16)
+                        var type = item.GetType();
+                        if (item.GetType().Equals(typeof(int))   || item.GetType().Equals(typeof(Int32))  || item.GetType().Equals(typeof(long))   || item.GetType().Equals(typeof(Int64))   || item.GetType().Equals(typeof(Int64)) )
                         {
                             continue;
                         }
