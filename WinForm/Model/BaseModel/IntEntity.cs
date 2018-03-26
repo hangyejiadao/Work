@@ -12,6 +12,6 @@ namespace Model.BaseModel
         /// int主键
         /// </summary>
         [Key]
-        public int Id { get; set; }
+        public new int Id { get; set; }
     }
 }

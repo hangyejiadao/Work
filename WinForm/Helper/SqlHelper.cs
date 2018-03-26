@@ -78,12 +78,18 @@ namespace Helper
                 StringBuilder sbValues = new StringBuilder("(");
                 foreach (var item in typeof(T).GetProperties())
                 {
-
+                    
                     object[] obj = item.GetCustomAttributes(typeof(KeyAttribute), true);
                     if (obj.Length > 0)
                     {
                         var type = item.GetType();
-                        if (item.GetType().Equals(typeof(int))   || item.GetType().Equals(typeof(Int32))  || item.GetType().Equals(typeof(long))   || item.GetType().Equals(typeof(Int64))   || item.GetType().Equals(typeof(Int64)) )
+                        if (
+                            item.PropertyType.Name.Equals("Int", StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals("Int16", StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals("Int32", StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals("Int64", StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals("long", StringComparison.OrdinalIgnoreCase) 
+                            )
                         {
                             continue;
                         }
@@ -96,11 +102,11 @@ namespace Helper
                     else
                     {
                         sbFiled.Append(item.Name + ",");
-                        sbValues.Append(item.GetValue(t) + "',");
+                        sbValues.Append("'" + item.GetValue(t) + "',");
                     }
                 }
 
-                string sql = "INSERT " + typeof(T).Name + sbFiled.ToString().TrimEnd(',') + ")" + "values " + sbValues.ToString().TrimEnd(',') + ")";
+                string sql = "INSERT INTO  " + typeof(T).Name + sbFiled.ToString().TrimEnd(',') + ")" + "values " + sbValues.ToString().TrimEnd(',') + ")";
                 return sql;
             }
             catch (Exception e)

@@ -21,15 +21,18 @@ namespace Test
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            AreaBll areabll = new AreaBll();
-            await areabll.Add(new Area()
-            {
-                Name = "Test",
-                ParentId = "Root",
-                Url = "adf", 
-            });
+            DemoA demo = new DemoA() {Id = ""};
         }
 
-        
+        public class Demo
+        {
+            public int Id { get; set; }
+        }
+
+        public class DemoA : Demo
+        {
+            public new string Id { get; set; }
+        }
+
     }
 }
