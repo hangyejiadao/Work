@@ -61,7 +61,7 @@ namespace Helper
             }
             catch (Exception e)
             {
-                transaction.Rollback();
+                if (transaction != null) transaction.Rollback();
                 Log.Error(e.ToString());
                 return false;
             }
@@ -86,11 +86,11 @@ namespace Helper
                     {
                         var type = item.GetType();
                         if (
-                            item.PropertyType.Name.Equals("Int", StringComparison.OrdinalIgnoreCase) ||
-                            item.PropertyType.Name.Equals("Int16", StringComparison.OrdinalIgnoreCase) ||
-                            item.PropertyType.Name.Equals("Int32", StringComparison.OrdinalIgnoreCase) ||
-                            item.PropertyType.Name.Equals("Int64", StringComparison.OrdinalIgnoreCase) ||
-                            item.PropertyType.Name.Equals("long", StringComparison.OrdinalIgnoreCase)
+                            item.PropertyType.Name.Equals(typeof(int).Name, StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals(typeof(Int64).Name, StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals(typeof(Int32).Name, StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals(typeof(Int16).Name, StringComparison.OrdinalIgnoreCase) ||
+                            item.PropertyType.Name.Equals(typeof(long).Name, StringComparison.OrdinalIgnoreCase)
                             )
                         {
                             continue;

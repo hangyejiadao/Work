@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Model;
 
-namespace Dal
+namespace Domain
 {
-    public class AreaDal : BaseDal<Area>
+    public class Spider
     {
-
     }
 }

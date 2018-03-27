@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dal
 {
-    public class BaseDal<T> where T : Entity, new()
+    public class Repository<T> where T : Entity, new()
     { 
         public virtual async Task<bool> Add(T t)
         {

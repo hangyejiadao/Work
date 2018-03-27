@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using AngleSharp.Parser.Html;
 using Helper;
 using log4net;
- 
+
 
 namespace WinForm
 {
@@ -21,10 +21,15 @@ namespace WinForm
             InitializeComponent();
         }
 
-        private LogHelper log = new LogHelper(typeof(Form1));
+ 
         private async void button1_Click(object sender, EventArgs e)
         {
-           
+            LogHelper log = new LogHelper(typeof(Form1));
+            using (Crawler spider = new Crawler())
+            {
+                string html = await spider.Crawl(ConstVar.AreaUrl,Encoding.UTF8);
+
+            }
         }
     }
 }
