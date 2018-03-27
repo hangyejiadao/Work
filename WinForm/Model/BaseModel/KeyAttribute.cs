@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.BaseModel
 {
+    /// <inheritdoc />
     /// <summary>
     /// 主键特性
     /// </summary>

@@ -8,6 +8,10 @@ namespace Model.BaseModel
 {
     public class Entity
     {
-
+        /// <summary>
+        /// 主键
+        /// </summary>
+        [Key]
+        public int Id { get; set; }
     }
 }
