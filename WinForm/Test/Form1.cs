@@ -1,10 +1,13 @@
-﻿ 
+﻿
 using Helper;
 using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,7 +25,7 @@ namespace Test
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            LogHelper log = new LogHelper(typeof(Form1));
+          
         }
     }
 }

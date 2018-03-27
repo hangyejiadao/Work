@@ -1,7 +1,9 @@
 ﻿using Model.BaseModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -17,7 +19,7 @@ namespace Helper
 
 
 
-        public static async Task<bool> Add<T>(T t) where T : Entity, new()
+        public static async Task<object> Add<T>(T t) where T : Entity, new()
         {
             return await Execute(SqlHelper.GetInsertSql<T>(t));
         }
@@ -25,9 +27,14 @@ namespace Helper
 
 
 
-        public static async Task<bool> Execute(string sql)
+        /// <summary>
+        /// 返回插入的Id
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private static async Task<object> Execute(string sql)
         {
-            SqlTransaction transaction = null;
+        
             try
             {
                 using (SqlConnection con = new SqlConnection(Constr))
@@ -37,38 +44,23 @@ namespace Helper
                         await con.OpenAsync();
                     }
 
-                    SqlCommand cmd = con.CreateCommand();
-
-                    //启动事务
-                    transaction = con.BeginTransaction("Transaction");
-                    //设定SqlCommand的事务和链接对象
-                    cmd.Connection = con;
-                    cmd.Transaction = transaction;
-                    cmd.CommandText = sql;
-                    int resl = await cmd.ExecuteNonQueryAsync();
-                    if (resl > 0)
-                    {
-                        transaction.Commit();
-                        return true;
-                    }
-                    else
-                    {
-                        transaction.Rollback();
-                        return false;
-                    }
+                    SqlCommand cmd = new SqlCommand(sql, con);
+                
+                    object resl =  await cmd.ExecuteScalarAsync();
+                    return resl;
 
                 }
             }
             catch (Exception e)
             {
-                if (transaction != null) transaction.Rollback();
+               
                 Log.Error(e.ToString());
-                return false;
+                return 0;
             }
 
         }
 
- 
+
 
 
 
@@ -108,7 +100,7 @@ namespace Helper
                     }
                 }
 
-                string sql = "INSERT INTO  " + typeof(T).Name + sbFiled.ToString().TrimEnd(',') + ")" + "values " + sbValues.ToString().TrimEnd(',') + ")";
+                string sql = "INSERT INTO  " + typeof(T).Name + sbFiled.ToString().TrimEnd(',') + ")" + "values " + sbValues.ToString().TrimEnd(',') + ") select Id=@@IDENTITY";
                 return sql;
             }
             catch (Exception e)

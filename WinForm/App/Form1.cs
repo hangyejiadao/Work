@@ -1,4 +1,5 @@
-﻿using Helper;
+﻿using Domain;
+using Helper;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,16 +24,27 @@ namespace App
         {
             try
             {
-                using (Crawler craw = new Crawler())
-                {
-                    string sstr = await craw.Crawl(ConstVar.AreaUrl, Encoding.UTF8);
-                }
+                button1.Enabled = false;
+                AreaSpider spider = new AreaSpider();
+                await spider.Crawl();
+                button1.Enabled = true;
             }
             catch (Exception exception)
             {
                 log.Error(exception.ToString());
             }
         }
- 
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.ToString());
+            }
+        }
     }
 }

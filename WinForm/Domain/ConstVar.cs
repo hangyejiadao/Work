@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App
+namespace Domain
 {
     /// <summary>
     /// 常量

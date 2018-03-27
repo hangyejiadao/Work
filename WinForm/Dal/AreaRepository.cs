@@ -9,6 +9,6 @@ namespace Dal
 {
     public class AreaRepository : Repository<Area>
     {
-
+       
     }
 }

@@ -10,7 +10,7 @@ namespace Dal
 {
     public class Repository<T> where T : Entity, new()
     { 
-        public virtual async Task<bool> Add(T t)
+        public virtual async Task<object> Add(T t)
         {
             return await SqlHelper.Add<T>(t); 
         } 

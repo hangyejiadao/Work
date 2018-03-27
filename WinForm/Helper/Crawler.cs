@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Helper
 {
-    public class Crawler : IDisposable
+    public class Crawler  
     {
         private LogHelper log = new LogHelper(typeof(Crawler));
         public async Task<string> Crawl(string url, Encoding encoding)
@@ -36,9 +36,7 @@ namespace Helper
             } 
         }
 
-        public void Dispose()
-        {
-
-        }
+        
+        
     }
 }
