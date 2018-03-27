@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Model;
+using Dal;
 
 namespace App
 {
@@ -38,34 +39,7 @@ namespace App
 
         private async void button2_ClickAsync(object sender, EventArgs e)
         {
-            try
-            {
-                List<Area> areas = await SqlHelper.GetEntity<Area>(p => p.Url != string.Empty);
-                List<Task> list = new List<Task>();
-                TaskFactory factory = new TaskFactory();
-                button2.Enabled = false;
-
-                CrawlShop crawlShop = new CrawlShop();
-                areas.ForEach(p =>
-              {
-                  list.Add(factory.StartNew(() => { crawlShop.CrawlData(p); }));
-
-              });
-
-
-                Task.WaitAll(list.ToArray());
-
-                Console.WriteLine("Over");
-                button2.Enabled = true;
-            }
-            catch (Exception exception)
-            {
-                log.Error(exception.ToString());
-            }
-            finally
-            {
-
-            }
+            this.contextMenuStrip1.Show(new Point(123, 456));
         }
 
         public void Test()
@@ -85,14 +59,15 @@ namespace App
                 var Node = new TreeNode()
                 {
                     Text = item.Name,
-                    Name = item.Name, 
+                    Name = item.Name,
                 };
                 foreach (var ChildItem in areas.Where(p => p.ParentId == item.Id.ToString()))
                 {
                     var child = new TreeNode()
                     {
                         Text = ChildItem.Name,
-                        Tag = ChildItem.Url
+                        Tag = ChildItem.Url,
+                        Name = ChildItem.Id.ToString() 
                     };
                     Node.Nodes.Add(child);
                 }
@@ -101,5 +76,39 @@ namespace App
             }
 
         }
+
+        private string SelectId = string.Empty;
+
+        private void treeView1_MouseDown(object sender, MouseEventArgs e)
+        {
+
+            if (e.Button == MouseButtons.Right)
+            {
+                Point ClickPoint = new Point(e.X, e.Y);
+                TreeNode CurrentNode = treeView1.GetNodeAt(ClickPoint);
+                if (CurrentNode.Tag != null)//判断你点的是不是一个节点
+                {
+                    SelectId = CurrentNode.Name;
+                    CurrentNode.ContextMenuStrip = contextMenuStrip1;
+                }
+                treeView1.SelectedNode = CurrentNode;//选中这个节点
+            }
+        }
+
+        private AreaRepository arearepsository = new AreaRepository();
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Area area = arearepsository.GetEntity(p=>p.Id==int.Parse(SelectId)).Result.FirstOrDefault();
+            try
+            {
+                CrawlShop shop = new CrawlShop();
+                shop.CrawlDataCz(area);
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.ToString());
+            }
+        }
     }
 }
+

@@ -16,9 +16,9 @@ namespace Dal
             return await SqlHelper.Add<T>(t); 
         }
 
-        //public virtual async Task<List<T>> GetEntity(Expression<Func<T, bool>> where)
-        //{
-        //    //return await SqlHelper.
-        //}
+        public virtual async Task<List<T>> GetEntity(Expression<Func<T, bool>> where)
+        {
+            return await SqlHelper.GetEntity<T>(where);
+        }
     }
 }
