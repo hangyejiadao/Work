@@ -28,7 +28,7 @@ namespace Domain
             try
             {
                 Crawler craw = new Crawler();
-                string html = await craw.Crawl(ConstVar.AreaUrl, Encoding.UTF8);
+                string html = await craw.CrawlAsy(ConstVar.AreaUrl, Encoding.UTF8);
                 var parse = new HtmlParser();
                 IHtmlDocument document = await parse.ParseAsync(html);
                 IEnumerable<IElement> elel = document.QuerySelectorAll("dt").Where(p => p.ClassName == null);
@@ -48,8 +48,8 @@ namespace Domain
                    {
                        await CrawlCity(p.NextElementSibling.InnerHtml, long.Parse(Id.ToString()));
                    });
-                   list.Add(factory.StartNew(() => { task.Start(); }) );
-                                
+                   list.Add(factory.StartNew(() => { task.Start(); }));
+
                });
                 Task.WaitAll(list.ToArray());
                 Console.WriteLine("区域全部抓取完成");
@@ -71,22 +71,34 @@ namespace Domain
             var parse = new HtmlParser();
             IHtmlDocument document = await parse.ParseAsync(html);
             IEnumerable<IElement> eles = document.QuerySelectorAll("a").Where(p => true);
-
-
+            List<Task> tasks = new List<Task>();
+            TaskFactory factory = new TaskFactory();
             Parallel.ForEach(eles, async p =>
             {
                 var url = p.Attributes["href"].Value;
-                await areaRepository.Add(new Area()
+                var area = new Area()
                 {
                     Name = p.InnerHtml,
                     Url = p.Attributes["href"].Value,
                     ParentId = parentId.ToString(),
+
+                };
+
+                object Id = await areaRepository.Add(area);
+                area.Id = int.Parse(Id.ToString());
+                var task = new Task(async () =>
+                {
+                  
                 });
-
+                tasks.Add(  factory.StartNew(() => { task.Start(); }));
             });
-
+            Task.WaitAll(tasks.ToArray());
+            Console.WriteLine("");
         }
 
-
+        //private Task CrawlData(Area area)
+        //{
+           
+        //}
     }
 }

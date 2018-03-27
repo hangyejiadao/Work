@@ -15,5 +15,23 @@ namespace Domain
         /// 区域网址
         /// </summary>
         public const string AreaUrl = "http://www.58.com/";
+
+        /// <summary>
+        /// 出租后缀
+        /// </summary>
+        public const string 出租 = "shangpucz/";
+
+        /// <summary>
+        /// 求租后缀
+        /// </summary>
+        public const string 求租 = "shangpuqz/";
+
+        /// <summary>
+        /// 转让后缀
+        /// </summary>
+        public const string 转让 = "shengyizr/";
+
+
+
     }
 }
