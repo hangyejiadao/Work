@@ -87,8 +87,17 @@
     <Compile Include="Migrations\201803280800222_G4.Designer.cs">
       <DependentUpon>201803280800222_G4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803280828595_G5.cs" />
+    <Compile Include="Migrations\201803280828595_G5.Designer.cs">
+      <DependentUpon>201803280828595_G5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803280852155_G6.cs" />
+    <Compile Include="Migrations\201803280852155_G6.Designer.cs">
+      <DependentUpon>201803280852155_G6.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShopBegRent.cs" />
     <Compile Include="ShopRentOrTransfer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +128,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803280800222_G4.resx">
       <DependentUpon>201803280800222_G4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803280828595_G5.resx">
+      <DependentUpon>201803280828595_G5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803280852155_G6.resx">
+      <DependentUpon>201803280852155_G6.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

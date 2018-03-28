@@ -16,12 +16,14 @@ namespace Model
         public DbSet<Area> Area { get; set; }
         public DbSet<Image> Image { get; set; }
         public DbSet<ShopRentOrTransfer> ShopTransfer { get; set; }
+        public DbSet<ShopBegRent> ShopBegRent { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Area>().ToTable("Area");
             modelBuilder.Entity<Image>().ToTable("Image");
             modelBuilder.Entity<ShopRentOrTransfer>().ToTable("ShopRentOrTransfer");
+            modelBuilder.Entity<ShopBegRent>().ToTable("ShopBegRent");
         }
     }
 }
