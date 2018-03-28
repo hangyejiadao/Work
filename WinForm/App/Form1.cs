@@ -67,7 +67,7 @@ namespace App
                     {
                         Text = ChildItem.Name,
                         Tag = ChildItem.Url,
-                        Name = ChildItem.Id.ToString() 
+                        Name = ChildItem.Id.ToString()
                     };
                     Node.Nodes.Add(child);
                 }
@@ -98,11 +98,69 @@ namespace App
         private AreaRepository arearepsository = new AreaRepository();
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Area area = arearepsository.GetEntity(p=>p.Id==int.Parse(SelectId)).Result.FirstOrDefault();
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
+            try
+            {
+                CrawlShop shop = new CrawlShop();
+                shop.CrawlAll(area);
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 抓出租
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
             try
             {
                 CrawlShop shop = new CrawlShop();
                 shop.CrawlDataCz(area);
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.ToString());
+            }
+        }
+
+        /// <summary>
+        /// 转让
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
+            try
+            {
+                CrawlShop shop = new CrawlShop();
+                shop.CrawlDataZr(area);
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.ToString());
+            }
+        }
+
+
+        /// <summary>
+        /// 求租
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void toolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
+            try
+            {
+                CrawlShop shop = new CrawlShop();
+                shop.CrawlDataBegRent(area);
             }
             catch (Exception exception)
             {

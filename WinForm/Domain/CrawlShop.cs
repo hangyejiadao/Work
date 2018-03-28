@@ -20,7 +20,25 @@ namespace Domain
     {
         private LogHelper log = new LogHelper(typeof(CrawlShop));
         private ShopRentOrTransferRepository shoprepo = new ShopRentOrTransferRepository();
+        private ShopBegRentRepository shopbegrepo = new ShopBegRentRepository();
         private ImageRepository imgrepo = new ImageRepository();
+
+
+
+
+        public void CrawlAll(Area area)
+        {
+            CrawlDataCz(area);
+            Console.WriteLine("出租信息抓完");
+            CrawlDataZr(area);
+            Console.WriteLine("转让信息抓完");
+            CrawlDataBegRent(area);
+            Console.WriteLine("求租信息抓完");
+        }
+
+
+
+
         /// <summary>
         /// 抓取出租信息
         /// </summary>
@@ -87,7 +105,7 @@ namespace Domain
 
                                   //var address = documentE.QuerySelectorAll("a").Where(o =>
                                   //    o.ClassName == "house_basic_title_content_item3 blue-link").ToList()[2];
- 
+
 
 
                                   var InfoContent = documentE.QuerySelectorAll("div")
@@ -125,7 +143,7 @@ namespace Domain
                                       Customer = Customer.InnerHtml,
                                       Phone = phone.InnerHtml,
                                       AreaId = area.Id.ToString(),
-                                      UpdateTime= time
+                                      UpdateTime = time
                                   };
                                   var imgUl = documentE.QuerySelectorAll("ul")
                                          .FirstOrDefault(o => o.ClassName == "general-pic-list");
@@ -234,7 +252,7 @@ namespace Domain
                                 IElement eloo = documentD.QuerySelector("a");
                                 var htmlE = crawler.Crawl(eloo.GetAttribute("href").ToString(), Encoding.UTF8);
 
-
+                                //开始抓取每条
                                 IDocument documentE = htmlParse.Parse(htmlE);
                                 IElement ele = documentE.QuerySelectorAll("span").Where(o => o.InnerHtml.StartsWith("更新于")).FirstOrDefault();
                                 DateTime time = DateTime.Parse(ele.InnerHtml.Replace("更新于", ""));
@@ -243,7 +261,7 @@ namespace Domain
                                     IElement InfoTitleElee = documentE.QuerySelectorAll("h1")
                                       .FirstOrDefault(o => o.ClassName == "c_000 f20");
 
-                                    IElement money = documentE.QuerySelectorAll("span").FirstOrDefault(o => o.ClassName == "house_basic_title_money_num"); 
+                                    IElement money = documentE.QuerySelectorAll("span").FirstOrDefault(o => o.ClassName == "house_basic_title_money_num");
                                     var InfoContent = documentE.QuerySelectorAll("div")
                                         .Where(o => o.ClassName == "general-item-wrap").ToList()[2];
                                     var Customer = documentE.QuerySelectorAll("span")
@@ -344,7 +362,119 @@ namespace Domain
         /// <param name="area"></param>
         public void CrawlDataBegRent(Area area)
         {
-            
+            try
+            {
+                Crawler crawler = new Crawler();
+                string url = area.Url + ConstVar.求租 + "0/";
+                string html = crawler.Crawl(url, Encoding.UTF8);
+                var htmlParse = new HtmlParser();
+                IHtmlDocument docuement = htmlParse.Parse(html);
+                List<IElement> eles = docuement.QuerySelectorAll("div").ToList().Where(p => p.ClassName == "pager")
+                    .ToList();
+                if (eles.Count > 0)
+                {
+
+                    IHtmlDocument htmlA = htmlParse.Parse(eles[0].InnerHtml);
+                    List<IElement> spanEles = htmlA.QuerySelectorAll("span").ToList();
+                    IElement el = spanEles[spanEles.Count - 2];
+                    int page = int.Parse(el.InnerHtml);
+                    List<string> urls = new List<string>();//分页
+                    for (int i = 1; i <= page; i++)
+                    {
+                        string str = url + "pn" + i + "/";
+                        urls.Add(str);
+                    }
+
+                    foreach (var e in urls)
+                    {
+                        //抓取每页
+                        string htmlB = crawler.Crawl(e, Encoding.UTF8);
+
+                        IDocument docuemnt = htmlParse.Parse(htmlB);
+                        IElement eleist = docuemnt.QuerySelectorAll("ul").Where(p => p.ClassName == "house-list-wrap")
+                            .ToList().FirstOrDefault();
+                        IDocument docuementC = htmlParse.Parse(eleist.InnerHtml);
+                        List<IElement> eliss = docuementC.QuerySelectorAll("div").Where(p => p.ClassName == "list-info")
+                            .ToList();
+                        //抓取每条
+                        for (int i = 0; i < eliss.Count; i++)
+                        {
+                            IDocument documentD = htmlParse.Parse(eliss[i].InnerHtml);
+
+                            IElement eloo = documentD.QuerySelector("a");
+                            var htmlE = crawler.Crawl(eloo.GetAttribute("href").ToString(), Encoding.UTF8);
+
+                            //开始解析
+                            IDocument documentE = htmlParse.Parse(htmlE);
+                            IElement time = documentE.QuerySelectorAll("div").FirstOrDefault(o => o.ClassName == "other");
+                            string update = time.InnerHtml.Substring(0, time.InnerHtml.IndexOf("<"))
+                                .Replace("发布时间：", "").Trim();
+                            DateTime updateime =DateTime.Parse( DateTime.Parse(update).ToShortDateString());
+                            if (updateime > DateTime.Now.AddMonths(-2))
+                            {
+                                //标题
+                                string InfoTitle = documentE.QuerySelectorAll("h1").FirstOrDefault().InnerHtml;
+                                //详细内容
+                                string InfoContent = documentE.QuerySelectorAll("div")
+                                    .FirstOrDefault(u => u.ClassName == "maincon").InnerHtml;
+
+                                //电话
+                                string Phone = documentE.QuerySelectorAll("span")
+                                    .FirstOrDefault(u => u.ClassName == "phone").InnerHtml;
+                                //租金
+                                string rentMoney = documentE.QuerySelectorAll("em")
+                                    .FirstOrDefault(u => u.ClassName == "redfont").InnerHtml;
+                                //面积
+                                string areasize = htmlParse.Parse(documentE.QuerySelectorAll("ul").FirstOrDefault(u => u.ClassName == "info").InnerHtml).QuerySelectorAll("li").ToList()[2].InnerHtml.Replace("面积：", "").Replace("㎡", "");
+                                //客户名
+                                string customerName = documentE.QuerySelectorAll("a")
+                                    .Where(u => u.ClassName == "tx").ToList()[1].InnerHtml;
+                                var infolilist = htmlParse
+                                    .Parse(documentE.QuerySelectorAll("ul").FirstOrDefault(u => u.ClassName == "info")
+                                        .InnerHtml).QuerySelectorAll("li");
+                                //区域名字
+                                string AreaName = string.Join(",",htmlParse.Parse(infolilist[0].InnerHtml).QuerySelectorAll("a").Select(p=>p.InnerHtml.Trim()).ToList());
+                                ShopBegRent shop = new ShopBegRent();
+                                shop.AreaName = AreaName;
+                                shop.AreaId = area.Id.ToString();
+                                shop.InfoContent = InfoContent;
+                                shop.InfoTitle = InfoTitle;
+                                shop.Phone = Phone;
+                                shop.MaxRentMoney = double.Parse(rentMoney) + 1000;
+                                shop.MinRentMoney = (double.Parse(rentMoney) - 1000) > 0
+                                    ? (double.Parse(rentMoney) - 1000)
+                                    : 0;
+                                shop.Customer = customerName;
+                                shop.UpdateTime = updateime;
+                                if (areasize.Contains("-"))
+                                {
+                                    string[] areasizes = areasize.Split('-');
+                                    shop.MinArea = double.Parse(areasizes[0]);
+                                    shop.MaxArea = double.Parse(areasizes[1]);
+                                }
+                                else
+                                {
+                                    shop.MinArea = double.Parse(areasize) - 10 > 0 ? double.Parse(areasize) - 10 : 0;
+                                    shop.MaxArea = double.Parse(areasize) + 10;
+                                }
+
+                                shop.UpdateTime = updateime;
+                                shop.Id = Guid.NewGuid();
+                                shopbegrepo.Add(shop);
+                                Console.WriteLine("添加了一条商铺求租");
+                                Thread.Sleep(5000);
+                            }
+                        }
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+
+            }
         }
     }
 }
