@@ -63,7 +63,7 @@ namespace Model
         /// <summary>
         /// 区域Id
         /// </summary>
-        public string AreaId { get; set; }
+        public string AreaId { get; set; } 
 
         /// <summary>
         /// 更新时间
