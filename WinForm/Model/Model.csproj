@@ -67,9 +67,29 @@
     <Compile Include="Migrations\201803261155202_B.Designer.cs">
       <DependentUpon>201803261155202_B.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803280708324_G.cs" />
+    <Compile Include="Migrations\201803280708324_G.Designer.cs">
+      <DependentUpon>201803280708324_G.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803280715094_G1.cs" />
+    <Compile Include="Migrations\201803280715094_G1.Designer.cs">
+      <DependentUpon>201803280715094_G1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803280721450_G2.cs" />
+    <Compile Include="Migrations\201803280721450_G2.Designer.cs">
+      <DependentUpon>201803280721450_G2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803280722192_G3.cs" />
+    <Compile Include="Migrations\201803280722192_G3.Designer.cs">
+      <DependentUpon>201803280722192_G3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803280800222_G4.cs" />
+    <Compile Include="Migrations\201803280800222_G4.Designer.cs">
+      <DependentUpon>201803280800222_G4.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShopTransfer.cs" />
+    <Compile Include="ShopRentOrTransfer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -84,6 +104,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803261155202_B.resx">
       <DependentUpon>201803261155202_B.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803280708324_G.resx">
+      <DependentUpon>201803280708324_G.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803280715094_G1.resx">
+      <DependentUpon>201803280715094_G1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803280721450_G2.resx">
+      <DependentUpon>201803280721450_G2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803280722192_G3.resx">
+      <DependentUpon>201803280722192_G3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803280800222_G4.resx">
+      <DependentUpon>201803280800222_G4.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

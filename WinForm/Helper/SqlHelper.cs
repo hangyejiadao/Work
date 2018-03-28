@@ -28,11 +28,20 @@ namespace Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static async Task<object> Add<T>(T t) where T : Entity, new()
+        public static async Task<object> AddAsync<T>(T t) where T : Entity, new()
         {
-            return await Execute(GetInsertSql<T>(t));
+            return await ExecuteAsync(GetInsertSql<T>(t));
         }
-
+        /// <summary>
+        /// 添加
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static    object  Add<T>(T t) where T : Entity, new()
+        {
+            return   Execute(GetInsertSql<T>(t));
+        }
         public static async Task<DataTable> SqlToDataTable<T>(string sql) where T : class, new()
         {
             try
@@ -82,10 +91,10 @@ namespace Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static async Task<List<T>> GetEntity<T>(Expression<Func<T,bool>>whereLambda ) where T : Entity, new()
+        public static async Task<List<T>> GetEntity<T>(Expression<Func<T, bool>> whereLambda) where T : Entity, new()
         {
-            List<T> list =   DataTableToList<T>(await SqlToDataTable<T>(GetEntitySql<T>()));
-       
+            List<T> list = DataTableToList<T>(await SqlToDataTable<T>(GetEntitySql<T>()));
+
             return list.AsQueryable().Where(whereLambda).ToList();
         }
 
@@ -126,7 +135,50 @@ namespace Helper
         }
 
 
+        /// <summary>
+        /// 返回插入的Id
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private static object Execute(string sql)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(Constr))
+                {
+                    if (con.State != System.Data.ConnectionState.Open)
+                    {
+                        con.Open();
+                    }
 
+                    using (SqlTransaction transaction = con.BeginTransaction())
+                    {
+                        try
+                        {
+                            SqlCommand cmd = new SqlCommand(sql, con, transaction);
+                            object resl = cmd.ExecuteScalar();
+                            transaction.Commit();
+                            return resl;
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e.ToString());
+                            transaction.Rollback();
+                            return 0;
+                        }
+                    }
+
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                Log.Error(e.ToString());
+                return 0;
+            }
+
+        }
 
 
         /// <summary>
@@ -134,7 +186,7 @@ namespace Helper
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        private static async Task<object> Execute(string sql)
+        private static async Task<object> ExecuteAsync(string sql)
         {
             try
             {
@@ -176,7 +228,7 @@ namespace Helper
 
 
 
-        protected static string GetEntitySql<T>() where T : Entity,new()
+        protected static string GetEntitySql<T>() where T : Entity, new()
         {
             return "select * from " + typeof(T).Name + "";
         }

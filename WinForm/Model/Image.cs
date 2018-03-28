@@ -13,7 +13,7 @@ namespace Model
         /// <summary>
         /// Guid主键
         /// </summary>
-        public Guid Guid { get; set; }
+        public Guid FkId { get; set; }
 
         /// <summary>
         ///商铺类型

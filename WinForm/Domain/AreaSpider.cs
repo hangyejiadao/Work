@@ -42,7 +42,7 @@ namespace Domain
                        ParentId = "0",
                        Url = ""
                    };
-                   object Id = await areaRepository.Add(areaa);
+                   object Id = await areaRepository.AddAsync(areaa);
 
                    var task = new Task(async () =>
                    {
@@ -84,7 +84,7 @@ namespace Domain
 
                 };
 
-                object Id = await areaRepository.Add(area);
+                object Id = await areaRepository.AddAsync(area);
                 area.Id = int.Parse(Id.ToString());
                 var task = new Task(async () =>
                 {

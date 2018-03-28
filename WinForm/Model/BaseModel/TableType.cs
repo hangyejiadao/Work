@@ -11,6 +11,6 @@ namespace Model.BaseModel
         /// <summary>
         /// 客户商铺转让
         /// </summary>
-        CusShopTransfer = 0
+        ShopRentOrTransfer = 0
     }
 }

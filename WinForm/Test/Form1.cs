@@ -9,6 +9,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,7 +26,12 @@ namespace Test
 
         private async void button1_Click(object sender, EventArgs e)
         {
-          
+            Crawler crawler = new Crawler();
+            string path = AppDomain.CurrentDomain.BaseDirectory + "/Img/Img/Iimg";
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }

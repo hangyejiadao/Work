@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -78,6 +79,47 @@ namespace Helper
                 return e.ToString();
             }
         }
+
+        /// <summary>
+        /// 抓取图片
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public Bitmap CrawlPic(string url)
+        {
+            try
+            {
+              
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "Get";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36";
+                request.Timeout = 5000;
+                using (HttpWebResponse response =   request.GetResponse() as HttpWebResponse)
+                {
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+
+                        using (Stream reader = (response.GetResponseStream()))
+                        {
+                            return new Bitmap(reader);
+                        }
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                log.Error(e.ToString());
+                return null;
+            }
+        }
+
+
 
 
 

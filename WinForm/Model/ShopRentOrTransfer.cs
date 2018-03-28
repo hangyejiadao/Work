@@ -8,7 +8,10 @@ using Model.BaseModel;
 
 namespace Model
 {
-    public class ShopTransfer : GuidEntity
+    /// <summary>
+    /// 商铺出租或转让
+    /// </summary>
+    public class ShopRentOrTransfer : GuidEntity
     {
         /// <summary>
         /// 信息类型
@@ -26,19 +29,22 @@ namespace Model
         public string InfoContent { get; set; }
 
         /// <summary>
+        /// 地址
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
         /// 详细地址
         /// </summary>
         public string DetailAddress { get; set; }
-
         /// <summary>
         /// 商铺面积
         /// </summary>
-        public decimal ShopArea { get; set; }
+        public string ShopArea { get; set; }
 
         /// <summary>
         /// 转让费
         /// </summary>
-        public decimal TransFerMoney { get; set; }
+        public string TransFerMoney { get; set; }
 
         /// <summary>
         /// 客户名字
@@ -49,7 +55,12 @@ namespace Model
         /// </summary>
         public string Phone { get; set; }
 
+        /// <summary>
+        /// 行业名字
+        /// </summary>
+        public string IndustryName { get; set; }
 
+        
     }
 
 
