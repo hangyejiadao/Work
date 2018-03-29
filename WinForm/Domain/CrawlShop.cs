@@ -74,7 +74,7 @@ namespace Domain
 
 
 
-                    List<string> urls = new List<string>();
+                    
                     for (int i = 1; i <= page; i++)
                     {
                         string str = string.Empty;
@@ -153,7 +153,7 @@ namespace Domain
                                                .FirstOrDefault(o => o.ClassName == "general-pic-list");
                                         IDocument documentf = htmlParse.Parse(imgUl.InnerHtml);
                                         shoprepo.Add(shoptransfer);
-                                        Console.WriteLine(area.Name + "添加一条转让信息");
+                                        Console.WriteLine(area.Name + "添加一条出租信息");
                                         var tem = documentf.QuerySelectorAll("img").Select(o => o.GetAttribute("data-src"));
                                         if (tem != null && tem.Count() > 0)
                                         {
@@ -184,7 +184,7 @@ namespace Domain
                                                             InfoType = TableType.ShopRentOrTransfer,
 
                                                         });
-                                                        Thread.Sleep(2000);
+                                                
                                                     }
                                                 }
                                             }
@@ -257,7 +257,7 @@ namespace Domain
                         page = 1;
                     }
 
-                    List<string> urls = new List<string>();
+                   
                     for (int i = 1; i <= page; i++)
                     {
                         string str = url + "pn" + i + "/";
@@ -364,12 +364,12 @@ namespace Domain
                                                         InfoType = TableType.ShopRentOrTransfer,
 
                                                     });
-                                                    Thread.Sleep(2000);
+                                                 
 
                                                 }
                                             });
 
-                                        Thread.Sleep(2000);
+                                       
                                     }
 
                                 }
@@ -525,7 +525,7 @@ namespace Domain
                                         shop.UpdateTime = updateime;
                                         shop.Id = Guid.NewGuid();
                                         shopbegrepo.Add(shop);
-                                        Console.WriteLine("添加了一条商铺求租");
+                                        Console.WriteLine(area.Name+"添加了一条商铺求租");
                                         Thread.Sleep(2000);
                                     }
                                 }
