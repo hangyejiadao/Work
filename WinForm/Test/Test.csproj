@@ -110,6 +110,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Dal\Dal.csproj">
+      <Project>{D47897CB-56C9-45EE-87AA-34D99FA63A98}</Project>
+      <Name>Dal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Helper\Helper.csproj">
       <Project>{19C24530-108B-4DC3-8B54-48217753E116}</Project>
       <Name>Helper</Name>

@@ -166,11 +166,11 @@ namespace Helper
                             transaction.Rollback();
                             return 0;
                         }
-                    } 
+                    }
                 }
             }
             catch (Exception e)
-            { 
+            {
                 Log.Error(e.ToString());
                 return 0;
             }
@@ -258,31 +258,49 @@ namespace Helper
                         }
                         else
                         {
+                            if (item.PropertyType.BaseType.Equals(typeof(Enum)))
+                            {
+                                sbFiled.Append(item.Name + ",");
+                                sbValues.Append("'" + ParseTool.StringAndTypeToInt(item.GetValue(t).ToString(), ParseTool.TransFerType(item.PropertyType.FullName)) + "',");
+                            }
+                            else
+                            {
+                                  if (item.PropertyType.Name.Equals(typeof(DateTime).Name))
+                                {
+                                    sbFiled.Append(item.Name + ",");
+                                    sbValues.Append("'" + DateTime.Parse(item.GetValue(t).ToString()).ToString("yyyy/MM/dd hh:mm:ss") + "',");
+                                }
+                                else
+                                {
+                                    sbFiled.Append(item.Name + ",");
+                                    sbValues.Append("'" + item.GetValue(t) + "',");
+                                }
+                            }
+                           
+
+                        }
+                    }
+                    else
+                    {
+                        if (item.PropertyType.BaseType.Equals(typeof(Enum)))
+                        {
+                            sbFiled.Append(item.Name + ",");
+                            sbValues.Append("'" + ParseTool.StringAndTypeToInt(item.GetValue(t).ToString(), ParseTool.TransFerType(item.PropertyType.FullName)) + "',");
+                        }
+                        else
+                        {
                             if (item.PropertyType.Name.Equals(typeof(DateTime).Name))
                             {
                                 sbFiled.Append(item.Name + ",");
-                                sbValues.Append("'" + DateTime.Parse( item.GetValue(t).ToString()).ToString("yyyy/MM/dd hh:mm:ss")  + "',");
+                                sbValues.Append("'" + DateTime.Parse(item.GetValue(t).ToString()).ToString("yyyy/MM/dd hh:mm:ss") + "',");
                             }
                             else
                             {
                                 sbFiled.Append(item.Name + ",");
                                 sbValues.Append("'" + item.GetValue(t) + "',");
                             }
-                        
                         }
-                    }
-                    else
-                    {
-                        if (item.PropertyType.Name.Equals(typeof(DateTime).Name))
-                        {
-                            sbFiled.Append(item.Name + ",");
-                            sbValues.Append("'" + DateTime.Parse(item.GetValue(t).ToString()).ToString("yyyy/MM/dd hh:mm:ss") + "',");
-                        }
-                        else
-                        {
-                            sbFiled.Append(item.Name + ",");
-                            sbValues.Append("'" + item.GetValue(t) + "',");
-                        }
+
                     }
                 }
 

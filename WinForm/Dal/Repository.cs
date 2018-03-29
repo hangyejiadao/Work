@@ -1,7 +1,9 @@
 ﻿using Helper;
+using Model;
 using Model.BaseModel;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,8 +12,8 @@ using System.Threading.Tasks;
 namespace Dal
 {
     public class Repository<T> where T : Entity, new()
-    { 
-
+    {
+        private DbContext ctx = new Context();
 
         public virtual async Task<object> AddAsync(T t)
         {

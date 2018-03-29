@@ -34,5 +34,7 @@ namespace Helper
         {
             Instance.Error(str);
         }
+
+         
     }
 }
