@@ -55,6 +55,7 @@
     <Compile Include="BaseModel\InfoType.cs" />
     <Compile Include="BaseModel\UrlType.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="Dto\Class1.cs" />
     <Compile Include="ErrorUrl.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="Migrations\201803260957353_Init.cs" />

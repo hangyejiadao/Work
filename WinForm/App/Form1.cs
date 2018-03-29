@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -166,6 +167,12 @@ namespace App
             {
                 log.Error(exception.ToString());
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            DbContext ctx = new Context();
+            ctx.Database.CreateIfNotExists();
         }
     }
 }

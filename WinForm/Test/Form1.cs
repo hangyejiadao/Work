@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Model.BaseModel;
+using Newtonsoft.Json;
 
 namespace Test
 {
@@ -30,15 +31,15 @@ namespace Test
         private async void button1_Click(object sender, EventArgs e)
         {
             ErrorUrlRepository errorUrlRepository = new ErrorUrlRepository();
-            errorUrlRepository.Add(new ErrorUrl() { Url = "http://www.baidu.com", UrlType = UrlType.Item });
+            //  errorUrlRepository.Add(new ErrorUrl() { Url = "http://www.baidu.com", UrlType = UrlType.Item });
+            string str = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "Json.txt");
+            var obj = JsonConvert.DeserializeObject<Rootobject>(str);
 
         }
 
-
-    }
-
-    public enum Test
-    {
-        A = 0
+        public enum Test
+        {
+            A = 0
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,9 @@ using AngleSharp.Parser.Html;
 using Dal;
 using Helper;
 using Model;
+using Model.Dto;
+using Newtonsoft.Json;
+
 
 namespace Domain
 {
@@ -24,34 +28,27 @@ namespace Domain
 
         public async Task Crawl()
         {
-            List<Area> area = new List<Area>();
+         
             try
             {
-                Crawler craw = new Crawler();
-                string html = await craw.CrawlAsy(ConstVar.AreaUrl, Encoding.UTF8);
-                var parse = new HtmlParser();
-                IHtmlDocument document = await parse.ParseAsync(html);
-                IEnumerable<IElement> elel = document.QuerySelectorAll("dt").Where(p => p.ClassName == null);
-                List<Task> list = new List<Task>();
-                TaskFactory factory = new TaskFactory();
-                elel.ToList().ForEach(async p =>
-               {
-                   var areaa = new Area()
-                   {
-                       Name = p.InnerHtml,
-                       ParentId = "0",
-                       Url = ""
-                   };
-                   object Id = await areaRepository.AddAsync(areaa);
-
-                   var task = new Task(async () =>
-                   {
-                       await CrawlCity(p.NextElementSibling.InnerHtml, long.Parse(Id.ToString()));
-                   });
-                   list.Add(factory.StartNew(() => { task.Start(); }));
-
-               });
-                Task.WaitAll(list.ToArray());
+                Rootobject obj = JsonConvert.DeserializeObject<Rootobject>(File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "Area.txt"));
+                foreach (var item in obj.GetType().GetProperties())
+                {
+                    Area rootArea = new Area() { Name = item.Name, Url = string.Empty, ParentId = "" };
+                    object Id = areaRepository.Add(rootArea);
+                    foreach (var p in ParseTool.TransFerType(item.PropertyType.FullName).GetProperties())
+                    {
+                        
+                        var url = p.GetValue(item.GetValue(obj)).ToString().Substring(0, p.GetValue(item.GetValue(obj)).ToString().IndexOf("|", StringComparison.Ordinal));
+                        Area areaa = new Area()
+                        {
+                            Name = p.Name,
+                            Url = "http://"+url+".58.com/",
+                            ParentId = Id.ToString()
+                        };
+                        areaRepository.Add(areaa);
+                    }
+                }
                 Console.WriteLine("区域全部抓取完成");
             }
             catch (Exception e)
@@ -88,9 +85,9 @@ namespace Domain
                 area.Id = int.Parse(Id.ToString());
                 var task = new Task(async () =>
                 {
-                  
+
                 });
-                tasks.Add(  factory.StartNew(() => { task.Start(); }));
+                tasks.Add(factory.StartNew(() => { task.Start(); }));
             });
             Task.WaitAll(tasks.ToArray());
             Console.WriteLine("");
@@ -98,7 +95,7 @@ namespace Domain
 
         //private Task CrawlData(Area area)
         //{
-           
+
         //}
     }
 }

@@ -14,7 +14,7 @@ namespace Domain
         /// <summary>
         /// 区域网址
         /// </summary>
-        public const string AreaUrl = "http://www.58.com/";
+        public const string AreaUrl = "http://www.58.com/changecity.html?fullpath=&PGTID=0d100000-025d-8e08-3220-280b9ef96246&ClickID=1";
 
         /// <summary>
         /// 出租后缀
