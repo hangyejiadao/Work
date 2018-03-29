@@ -7,7 +7,7 @@ using Model;
 
 namespace Dal
 {
-   public class ShopBegRentRepository:Repository<ShopBegRent>
+    public class ShopBegRentRepository : Repository<ShopBegRent>
     {
     }
 }

@@ -19,5 +19,10 @@ namespace Model.BaseModel
         /// 每条
         /// </summary>
         Item = 1,
+
+        /// <summary>
+        /// 总的
+        /// </summary>
+        All = 2,
     }
 }
