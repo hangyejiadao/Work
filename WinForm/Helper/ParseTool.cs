@@ -44,6 +44,17 @@ namespace Helper
             return guid;
         }
 
+        /// <summary>
+        /// string转guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public static DateTime StringToDateTime(string str)
+        {
+            DateTime guid = new DateTime();
+            DateTime.TryParse(str, out guid);
+            return guid;
+        }
 
 
         /// <summary>
@@ -58,6 +69,19 @@ namespace Helper
             Enum.TryParse(str, out t);
             return t;
         }
+
+
+        /// <summary>
+        /// string value 转enum
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="type"></param>
+        public static object StringIntValueToEnum(string value, Type type)
+        {
+            
+            return Enum.Parse(type,  value);
+        }
+
 
 
         /// <summary>

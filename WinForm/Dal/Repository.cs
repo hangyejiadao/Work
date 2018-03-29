@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Model;
 
 namespace Dal
 {
@@ -23,9 +24,15 @@ namespace Dal
             return   SqlHelper.Add<T>(t);
         }
 
-        public virtual async Task<List<T>> GetEntity(Expression<Func<T, bool>> where)
+        public virtual bool AddBool(T t)
         {
-            return await SqlHelper.GetEntity<T>(where);
+            return SqlHelper.AddBool<T>(t);
+        }
+
+
+        public virtual   List<T>  GetEntity(Expression<Func<T, bool>> where)
+        {
+            return   new Context().Set<T>().Where(where).ToList();
         }
     }
 }

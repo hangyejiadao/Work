@@ -74,7 +74,7 @@ namespace Domain
 
 
 
-                    
+
                     for (int i = 1; i <= page; i++)
                     {
                         string str = string.Empty;
@@ -105,7 +105,7 @@ namespace Domain
 
                                     IDocument documentE = htmlParse.Parse(htmlE);
                                     IElement ele = documentE.QuerySelectorAll("span").Where(o => o.InnerHtml.StartsWith("更新于")).FirstOrDefault();
-                                    DateTime time = DateTime.Parse(ele.InnerHtml.Replace("更新于", ""));
+                                    DateTime time = ParseTool.StringToDateTime(ele.InnerHtml.Replace("更新于", ""));
                                     if (time > DateTime.Now.AddMonths(-2))
                                     {
                                         IElement InfoTitleElee = documentE.QuerySelectorAll("h1")
@@ -113,7 +113,7 @@ namespace Domain
 
                                         IElement money = documentE.QuerySelectorAll("span").FirstOrDefault(o => o.ClassName == "house_basic_title_money_num");
                                         var InfoContent = documentE.QuerySelectorAll("div")
-                                            .Where(o => o.ClassName == "general-item-wrap").ToList()[2];
+                                            .Where(o => o.ClassName == "general-item-wrap").FirstOrDefault(u => u.ParentElement.ClassName == "general-item general-miaoshu");
                                         var Customer = documentE.QuerySelectorAll("span")
                                             .FirstOrDefault(o => o.ClassName == "f14 c_333 jjrsay");
                                         var phone = documentE.QuerySelectorAll("p").FirstOrDefault(o => o.ClassName == "phone-num");
@@ -136,60 +136,67 @@ namespace Domain
                                         var shoptransfer = new ShopRentOrTransfer()
                                         {
                                             Id = Guid.NewGuid(),
-                                            ShopArea = areasize.InnerHtml,
-                                            InfoTitle = InfoTitleElee.InnerHtml,
-                                            TransFerMoney = money.InnerHtml,
+                                            ShopArea = areasize == null ? "" : areasize.InnerHtml,
+                                            InfoTitle = InfoTitleElee == null ? "" : InfoTitleElee.InnerHtml,
+                                            TransFerMoney = money == null ? "" : money.InnerHtml,
                                             Address = string.Join("", address.InnerHtml),
-                                            DetailAddress = addressDetail.InnerHtml,
-                                            InfoContent = InfoContent.InnerHtml,
+                                            DetailAddress = addressDetail == null ? "" : addressDetail.InnerHtml,
+                                            InfoContent = InfoContent == null ? "" : InfoContent.InnerHtml,
                                             InfoType = Model.BaseModel.InfoType.出租,
-                                            IndustryName = IndustryName.InnerHtml,
-                                            Customer = Customer.InnerHtml,
-                                            Phone = phone.InnerHtml,
+                                            IndustryName = IndustryName==null?"" :IndustryName.InnerHtml,
+                                            Customer =Customer==null?"": Customer.InnerHtml,
+                                            Phone =phone==null?"": phone.InnerHtml,
                                             AreaId = area.Id.ToString(),
                                             UpdateTime = time
                                         };
                                         var imgUl = documentE.QuerySelectorAll("ul")
                                                .FirstOrDefault(o => o.ClassName == "general-pic-list");
-                                        IDocument documentf = htmlParse.Parse(imgUl.InnerHtml);
-                                        shoprepo.Add(shoptransfer);
+
+                                        object obj = shoprepo.Add(shoptransfer);
+                                        bool resultId = (bool)obj;
+                                        Thread.Sleep(3000);
                                         Console.WriteLine(area.Name + "添加一条出租信息");
-                                        var tem = documentf.QuerySelectorAll("img").Select(o => o.GetAttribute("data-src"));
-                                        if (tem != null && tem.Count() > 0)
+                                        if (imgUl != null && resultId)
                                         {
-                                            foreach (var o in tem)
+                                            IDocument documentf = htmlParse.Parse(imgUl.InnerHtml);
+                                            var tem = documentf.QuerySelectorAll("img").Select(o => o.GetAttribute("data-src"));
+                                            if (tem != null && tem.Count() > 0)
                                             {
-                                                if (o != null)
+                                                foreach (var o in tem)
                                                 {
-
-
-                                                    Bitmap img = crawler.CrawlPic(o);
-                                                    if (img != null)
+                                                    if (o != null)
                                                     {
-                                                        string path = AppDomain.CurrentDomain.BaseDirectory + "Imgs/" + shoptransfer.Id + "/";
-                                                        if (!Directory.Exists(path))
+
+
+                                                        Bitmap img = crawler.CrawlPic(o);
+                                                        if (img != null)
                                                         {
-                                                            Directory.CreateDirectory(path);
+                                                            string path = AppDomain.CurrentDomain.BaseDirectory + "Imgs/" + shoptransfer.Id + "/";
+                                                            if (!Directory.Exists(path))
+                                                            {
+                                                                Directory.CreateDirectory(path);
+                                                            }
+
+                                                            string fullPath =
+                                                                path + Guid.NewGuid().ToString().Replace("-", "") + ".png";
+                                                            img.Save(fullPath);
+                                                            string savePath = fullPath.Replace(AppDomain.CurrentDomain.BaseDirectory,
+                                                                "");
+                                                            imgrepo.Add(new Model.Image()
+                                                            {
+                                                                FkId = shoptransfer.Id,
+                                                                ImageUrl = savePath,
+                                                                InfoType = TableType.ShopRentOrTransfer,
+
+                                                            });
+                                                            Thread.Sleep(3000);
                                                         }
-
-                                                        string fullPath =
-                                                            path + Guid.NewGuid().ToString().Replace("-", "") + ".png";
-                                                        img.Save(fullPath);
-                                                        string savePath = fullPath.Replace(AppDomain.CurrentDomain.BaseDirectory,
-                                                            "");
-                                                        imgrepo.Add(new Model.Image()
-                                                        {
-                                                            FkId = shoptransfer.Id,
-                                                            ImageUrl = savePath,
-                                                            InfoType = TableType.ShopRentOrTransfer,
-
-                                                        });
-                                                
                                                     }
                                                 }
-                                            }
 
+                                            }
                                         }
+
 
                                     }
 
@@ -257,7 +264,7 @@ namespace Domain
                         page = 1;
                     }
 
-                   
+
                     for (int i = 1; i <= page; i++)
                     {
                         string str = url + "pn" + i + "/";
@@ -287,7 +294,7 @@ namespace Domain
                                     //开始抓取每条
                                     IDocument documentE = htmlParse.Parse(htmlE);
                                     IElement ele = documentE.QuerySelectorAll("span").Where(o => o.InnerHtml.StartsWith("更新于")).FirstOrDefault();
-                                    DateTime time = DateTime.Parse(ele.InnerHtml.Replace("更新于", ""));
+                                    DateTime time = ParseTool.StringToDateTime(ele.InnerHtml.Replace("更新于", ""));
                                     if (time > DateTime.Now.AddMonths(-2))
                                     {
                                         IElement InfoTitleElee = documentE.QuerySelectorAll("h1")
@@ -322,54 +329,61 @@ namespace Domain
                                         var shoptransfer = new ShopRentOrTransfer()
                                         {
                                             Id = Guid.NewGuid(),
-                                            ShopArea = areasize.InnerHtml.Trim(),
-                                            InfoTitle = InfoTitleElee.InnerHtml.Trim(),
-                                            TransFerMoney = money.InnerHtml.Trim(),
+                                            ShopArea = areasize == null ? "" : areasize.InnerHtml.Trim(),
+                                            InfoTitle = InfoTitleElee == null ? "" : InfoTitleElee.InnerHtml.Trim(),
+                                            TransFerMoney = money == null ? "" : money.InnerHtml.Trim(),
                                             Address = string.Join("", address.InnerHtml.Trim()),
-                                            DetailAddress = addressDetail.InnerHtml.Trim(),
-                                            InfoContent = InfoContent.InnerHtml.Trim(),
+                                            DetailAddress = addressDetail == null ? "" : addressDetail.InnerHtml.Trim(),
+                                            InfoContent = InfoContent == null ? "" : InfoContent.InnerHtml.Trim(),
                                             InfoType = Model.BaseModel.InfoType.出租,
-                                            IndustryName = IndustryName.InnerHtml.Trim(),
-                                            Customer = Customer.InnerHtml.Trim(),
-                                            Phone = phone.InnerHtml.Trim(),
+                                            IndustryName = IndustryName == null ? "" : IndustryName.InnerHtml.Trim(),
+                                            Customer = Customer == null ? "" : Customer.InnerHtml.Trim(),
+                                            Phone = phone == null ? "" : phone.InnerHtml.Trim(),
                                             AreaId = area.Id.ToString(),
                                             UpdateTime = time
                                         };
                                         var imgUl = documentE.QuerySelectorAll("ul")
                                                .FirstOrDefault(o => o.ClassName == "general-pic-list");
-                                        IDocument documentf = htmlParse.Parse(imgUl.InnerHtml);
-                                        shoprepo.Add(shoptransfer);
+
+                                        Object obj = shoprepo.Add(shoptransfer);
+                                        bool resultId = (bool)obj;
+                                        Thread.Sleep(3000);
                                         Console.WriteLine(area.Name + "添加了一条转让信息");
-                                        documentf.QuerySelectorAll("img").Select(o => o.GetAttribute("data-src")).ToList().ForEach(
-                                            o =>
-                                            {
-                                                Bitmap img = crawler.CrawlPic(o);
-                                                if (img != null)
+                                        if (imgUl != null&&resultId)
+                                        {
+
+
+                                            IDocument documentf = htmlParse.Parse(imgUl.InnerHtml);
+                                            documentf.QuerySelectorAll("img").Select(o => o.GetAttribute("data-src")).ToList().ForEach(
+                                                o =>
                                                 {
-                                                    string path = AppDomain.CurrentDomain.BaseDirectory + "Imgs/" + shoptransfer.Id + "/";
-                                                    if (!Directory.Exists(path))
+                                                    Bitmap img = crawler.CrawlPic(o);
+                                                    if (img != null)
                                                     {
-                                                        Directory.CreateDirectory(path);
+                                                        string path = AppDomain.CurrentDomain.BaseDirectory + "Imgs/" + shoptransfer.Id + "/";
+                                                        if (!Directory.Exists(path))
+                                                        {
+                                                            Directory.CreateDirectory(path);
+                                                        }
+
+                                                        string fullPath =
+                                                            path + Guid.NewGuid().ToString().Replace("-", "") + ".png";
+                                                        img.Save(fullPath);
+                                                        string savePath = fullPath.Replace(AppDomain.CurrentDomain.BaseDirectory,
+                                                            "");
+                                                        imgrepo.Add(new Model.Image()
+                                                        {
+                                                            FkId = shoptransfer.Id,
+                                                            ImageUrl = savePath,
+                                                            InfoType = TableType.ShopRentOrTransfer,
+
+                                                        });
+                                                        Thread.Sleep(3000);
+
                                                     }
+                                                });
 
-                                                    string fullPath =
-                                                        path + Guid.NewGuid().ToString().Replace("-", "") + ".png";
-                                                    img.Save(fullPath);
-                                                    string savePath = fullPath.Replace(AppDomain.CurrentDomain.BaseDirectory,
-                                                        "");
-                                                    imgrepo.Add(new Model.Image()
-                                                    {
-                                                        FkId = shoptransfer.Id,
-                                                        ImageUrl = savePath,
-                                                        InfoType = TableType.ShopRentOrTransfer,
-
-                                                    });
-                                                 
-
-                                                }
-                                            });
-
-                                       
+                                        }
                                     }
 
                                 }
@@ -422,7 +436,7 @@ namespace Domain
 
                     IHtmlDocument htmlA = htmlParse.Parse(eles[0].InnerHtml);
                     List<IElement> spanEles = htmlA.QuerySelectorAll("span").ToList();
-                   
+
 
                     int page = 0;
                     if (spanEles.Count > 2)
@@ -473,7 +487,7 @@ namespace Domain
                                     IElement time = documentE.QuerySelectorAll("div").FirstOrDefault(o => o.ClassName == "other");
                                     string update = time.InnerHtml.Substring(0, time.InnerHtml.IndexOf("<"))
                                         .Replace("发布时间：", "").Trim();
-                                    DateTime updateime = DateTime.Parse(DateTime.Parse(update).ToShortDateString());
+                                    DateTime updateime = ParseTool.StringToDateTime(ParseTool.StringToDateTime(update).ToShortDateString());
                                     if (updateime > DateTime.Now.AddMonths(-2))
                                     {
                                         //标题
@@ -525,8 +539,9 @@ namespace Domain
                                         shop.UpdateTime = updateime;
                                         shop.Id = Guid.NewGuid();
                                         shopbegrepo.Add(shop);
-                                        Console.WriteLine(area.Name+"添加了一条商铺求租");
-                                        Thread.Sleep(2000);
+                                        Thread.Sleep(3000);
+                                        Console.WriteLine(area.Name + "添加了一条商铺求租");
+
                                     }
                                 }
                                 catch (Exception exception)
@@ -553,6 +568,12 @@ namespace Domain
                 Console.WriteLine(e);
 
             }
+        }
+
+
+        public void Clean()
+        {
+
         }
     }
 }

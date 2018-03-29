@@ -40,26 +40,39 @@ namespace App
 
         private async void button2_ClickAsync(object sender, EventArgs e)
         {
-            List<Area> areas = arearepsository.GetEntity(p => p.Url != string.Empty).Result.ToList();
+            button2.Enabled = false;
+            List<Area> areas = arearepsository.GetEntity(p => p.Url != string.Empty).ToList();
             try
             {
                 foreach (var item in areas)
                 {
-                    CrawlShop shop = new CrawlShop();
-                    shop.CrawlAll(item);
-                } 
+                    try
+                    {
+                        CrawlShop shop = new CrawlShop();
+                        shop.CrawlAll(item);
+                    }
+                    catch (Exception exception)
+                    {
+                        log.Error(exception.ToString());
+                        Console.WriteLine(exception);
+                       
+                    }
+                
+                }
+                button2.Enabled = true;
             }
             catch (Exception exception)
             {
+                button2.Enabled = true;
                 log.Error(exception.ToString());
             }
         }
 
 
 
-        private async void Form1_Load(object sender, EventArgs e)
+        private  void Form1_Load(object sender, EventArgs e)
         {
-            List<Area> areas = await SqlHelper.GetEntity<Area>(p => true);
+            List<Area> areas =  SqlHelper.GetEntity<Area>(p => true);
 
             foreach (var item in areas.Where(p => p.Url == string.Empty))
             {
@@ -105,7 +118,7 @@ namespace App
         private AreaRepository arearepsository = new AreaRepository();
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).FirstOrDefault();
             try
             {
                 CrawlShop shop = new CrawlShop();
@@ -124,7 +137,7 @@ namespace App
         /// <param name="e"></param>
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).FirstOrDefault();
             try
             {
                 CrawlShop shop = new CrawlShop();
@@ -143,7 +156,7 @@ namespace App
         /// <param name="e"></param>
         private void toolStripMenuItem3_Click(object sender, EventArgs e)
         {
-            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).FirstOrDefault();
             try
             {
                 CrawlShop shop = new CrawlShop();
@@ -163,7 +176,7 @@ namespace App
         /// <param name="e"></param>
         private void toolStripMenuItem4_Click(object sender, EventArgs e)
         {
-            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).Result.FirstOrDefault();
+            Area area = arearepsository.GetEntity(p => p.Id == int.Parse(SelectId)).FirstOrDefault();
             try
             {
                 CrawlShop shop = new CrawlShop();

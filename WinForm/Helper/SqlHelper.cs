@@ -32,6 +32,17 @@ namespace Helper
         {
             return await ExecuteAsync(GetInsertSql<T>(t));
         }
+        ///// <summary>
+        ///// 添加
+        ///// </summary>
+        ///// <typeparam name="T"></typeparam>
+        ///// <param name="t"></param>
+        ///// <returns></returns>
+        //public static object Add<T>(T t) where T : Entity, new()
+        //{
+        //    return Execute(GetInsertSql<T>(t));
+        //}
+
         /// <summary>
         /// 添加
         /// </summary>
@@ -42,7 +53,9 @@ namespace Helper
         {
             return Execute(GetInsertSql<T>(t));
         }
-        public static async Task<DataTable> SqlToDataTable<T>(string sql) where T : class, new()
+
+
+        public static DataTable SqlToDataTable<T>(string sql) where T : class, new()
         {
             try
             {
@@ -50,7 +63,7 @@ namespace Helper
                 {
                     if (con.State != System.Data.ConnectionState.Open)
                     {
-                        await con.OpenAsync();
+                        con.Open();
                     }
 
                     using (SqlTransaction transaction = con.BeginTransaction())
@@ -91,9 +104,9 @@ namespace Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static async Task<List<T>> GetEntity<T>(Expression<Func<T, bool>> whereLambda) where T : Entity, new()
+        public static List<T> GetEntity<T>(Expression<Func<T, bool>> whereLambda) where T : Entity, new()
         {
-            List<T> list = DataTableToList<T>(await SqlToDataTable<T>(GetEntitySql<T>()));
+            List<T> list = DataTableToList<T>(SqlToDataTable<T>(GetEntitySql<T>()));
 
             return list.AsQueryable().Where(whereLambda).ToList();
         }
@@ -115,12 +128,22 @@ namespace Helper
 
                     //p.SetValue(t, Convert.ChangeType(dt.Rows[i][p.Name], p.PropertyType));  
                     var value = dt.Rows[i][p.Name];
-                    if (!p.PropertyType.IsGenericType)
+                    if (!p.PropertyType.IsGenericType)//不是泛型
                     {
-                        p.SetValue(t, value == null ? null : Convert.ChangeType(value, p.PropertyType));
+                        if (p.PropertyType.BaseType.Equals(typeof(Enum)))
+                        {
+                            p.SetValue(t, value == null ? null : Enum.Parse(p.PropertyType, value.ToString()));
+                        }
+                        else
+                        {
+                            p.SetValue(t, value == null ? null : Convert.ChangeType(value, p.PropertyType));
+                        }
+
+
                     }
                     else
                     {
+                        //泛型
                         Type genericTypeDefinition = p.PropertyType.GetGenericTypeDefinition();
                         if (genericTypeDefinition == typeof(Nullable<>))
                         {
@@ -131,6 +154,48 @@ namespace Helper
                 list.Add(t);
             }
             return list;
+
+        }
+
+        /// <summary>
+        /// 返回插入的Id
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <returns></returns>
+        private static bool Executebool(string sql)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(Constr))
+                {
+                    if (con.State != System.Data.ConnectionState.Open)
+                    {
+                        con.Open();
+                    }
+
+                    using (SqlTransaction transaction = con.BeginTransaction())
+                    {
+                        try
+                        {
+                            SqlCommand cmd = new SqlCommand(sql, con, transaction);
+                            int resl = cmd.ExecuteNonQuery();
+                            transaction.Commit();
+                            return resl>0;
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e.ToString());
+                            transaction.Rollback();
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.ToString());
+                return false;
+            }
 
         }
 
@@ -265,7 +330,7 @@ namespace Helper
                             }
                             else
                             {
-                                  if (item.PropertyType.Name.Equals(typeof(DateTime).Name))
+                                if (item.PropertyType.Name.Equals(typeof(DateTime).Name))
                                 {
                                     sbFiled.Append(item.Name + ",");
                                     sbValues.Append("'" + DateTime.Parse(item.GetValue(t).ToString()).ToString("yyyy/MM/dd hh:mm:ss") + "',");
@@ -276,7 +341,7 @@ namespace Helper
                                     sbValues.Append("'" + item.GetValue(t) + "',");
                                 }
                             }
-                           
+
 
                         }
                     }
@@ -314,6 +379,11 @@ namespace Helper
                 return e.ToString();
             }
 
+        }
+
+        public static bool AddBool<T>(T t) where T : Entity, new()
+        {
+            return Executebool(GetInsertSql<T>(t));
         }
     }
 }

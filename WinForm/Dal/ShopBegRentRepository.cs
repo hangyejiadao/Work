@@ -9,5 +9,15 @@ namespace Dal
 {
     public class ShopBegRentRepository : Repository<ShopBegRent>
     {
+        public override object Add(ShopBegRent t)
+        {
+            if (GetEntity(u => u.Phone == t.Phone).Count() > 0)
+                return false;
+            else
+            {
+                return base.Add(t);
+                
+            } 
+        }
     }
 }

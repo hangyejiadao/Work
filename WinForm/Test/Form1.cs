@@ -32,8 +32,10 @@ namespace Test
         {
             ErrorUrlRepository errorUrlRepository = new ErrorUrlRepository();
             //  errorUrlRepository.Add(new ErrorUrl() { Url = "http://www.baidu.com", UrlType = UrlType.Item });
-            string str = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "Json.txt");
-            var obj = JsonConvert.DeserializeObject<Rootobject>(str);
+            //string str = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "Json.txt");
+            //var obj = JsonConvert.DeserializeObject<Rootobject>(str);
+            errorUrlRepository.GetEntity(u => true);
+            UrlType url = ParseTool.StringToEnum<UrlType>("1");
 
         }
 
