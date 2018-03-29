@@ -38,9 +38,9 @@ namespace Helper
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static    object  Add<T>(T t) where T : Entity, new()
+        public static object Add<T>(T t) where T : Entity, new()
         {
-            return   Execute(GetInsertSql<T>(t));
+            return Execute(GetInsertSql<T>(t));
         }
         public static async Task<DataTable> SqlToDataTable<T>(string sql) where T : class, new()
         {
@@ -261,8 +261,17 @@ namespace Helper
                         }
                         else
                         {
-                            sbFiled.Append(item.Name + ",");
-                            sbValues.Append("'" + item.GetValue(t) + "',");
+                            if (item.PropertyType.Name.Equals(typeof(DateTime).Name))
+                            {
+                                sbFiled.Append(item.Name + ",");
+                                sbValues.Append("'" + DateTime.Parse( item.GetValue(t).ToString()).ToString("yyyy/MM/dd hh:mm:ss")  + "',");
+                            }
+                            else
+                            {
+                                sbFiled.Append(item.Name + ",");
+                                sbValues.Append("'" + item.GetValue(t) + "',");
+                            }
+                        
                         }
                     }
                     else

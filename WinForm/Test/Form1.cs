@@ -26,12 +26,8 @@ namespace Test
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            Crawler crawler = new Crawler();
-            string path = AppDomain.CurrentDomain.BaseDirectory + "/Img/Img/Iimg";
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+            string time = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss") ;
+
         }
     }
 }
