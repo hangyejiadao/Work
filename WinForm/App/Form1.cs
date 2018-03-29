@@ -40,16 +40,22 @@ namespace App
 
         private async void button2_ClickAsync(object sender, EventArgs e)
         {
-            this.contextMenuStrip1.Show(new Point(123, 456));
-        }
-
-        public void Test()
-        {
-            for (int i = 0; i < 1000; i++)
+            List<Area> areas = arearepsository.GetEntity(p => p.Url != string.Empty).Result.ToList();
+            try
             {
-                Console.WriteLine("adf");
+                foreach (var item in areas)
+                {
+                    CrawlShop shop = new CrawlShop();
+                    shop.CrawlAll(item);
+                } 
+            }
+            catch (Exception exception)
+            {
+                log.Error(exception.ToString());
             }
         }
+
+
 
         private async void Form1_Load(object sender, EventArgs e)
         {
