@@ -166,14 +166,11 @@ namespace Helper
                             transaction.Rollback();
                             return 0;
                         }
-                    }
-
-
+                    } 
                 }
             }
             catch (Exception e)
-            {
-
+            { 
                 Log.Error(e.ToString());
                 return 0;
             }
@@ -276,8 +273,16 @@ namespace Helper
                     }
                     else
                     {
-                        sbFiled.Append(item.Name + ",");
-                        sbValues.Append("'" + item.GetValue(t) + "',");
+                        if (item.PropertyType.Name.Equals(typeof(DateTime).Name))
+                        {
+                            sbFiled.Append(item.Name + ",");
+                            sbValues.Append("'" + DateTime.Parse(item.GetValue(t).ToString()).ToString("yyyy/MM/dd hh:mm:ss") + "',");
+                        }
+                        else
+                        {
+                            sbFiled.Append(item.Name + ",");
+                            sbValues.Append("'" + item.GetValue(t) + "',");
+                        }
                     }
                 }
 

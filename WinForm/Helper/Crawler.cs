@@ -15,7 +15,7 @@ namespace Helper
         private LogHelper log = new LogHelper(typeof(Crawler));
 
 
-        public string Crawl(string url, Encoding encoding)
+        public string Crawl(string url, Encoding encoding  )
         {
             try
             {
@@ -35,8 +35,7 @@ namespace Helper
                     else
                     {
                         return "失败";
-                    }
-
+                    } 
                 }
             }
             catch (Exception e)
