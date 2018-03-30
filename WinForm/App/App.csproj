@@ -85,6 +85,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="ua.log">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -106,9 +109,16 @@
       <Project>{F96C1F02-907D-4904-A005-0D1658106BD3}</Project>
       <Name>Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Test\Test.csproj">
+      <Project>{444DDA47-B124-43BB-B96C-D424DBFDEDA7}</Project>
+      <Name>Test</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Area.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="IPUrl.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

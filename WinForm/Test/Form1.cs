@@ -30,13 +30,16 @@ namespace Test
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            ErrorUrlRepository errorUrlRepository = new ErrorUrlRepository();
-            //  errorUrlRepository.Add(new ErrorUrl() { Url = "http://www.baidu.com", UrlType = UrlType.Item });
-            //string str = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "Json.txt");
-            //var obj = JsonConvert.DeserializeObject<Rootobject>(str);
-            errorUrlRepository.GetEntity(u => true);
-            UrlType url = ParseTool.StringToEnum<UrlType>("1");
-
+            //ErrorUrlRepository errorUrlRepository = new ErrorUrlRepository();
+            ////  errorUrlRepository.Add(new ErrorUrl() { Url = "http://www.baidu.com", UrlType = UrlType.Item });
+            ////string str = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "Json.txt");
+            ////var obj = JsonConvert.DeserializeObject<Rootobject>(str);
+            //errorUrlRepository.GetEntity(u => true);
+            //UrlType url = ParseTool.StringToEnum<UrlType>("1");
+            Parallel.For(1, 101, p =>
+            {
+                Console.WriteLine(p);
+            });
         }
 
         public enum Test

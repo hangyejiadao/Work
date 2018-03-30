@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Helper;
 
 namespace App
 {
@@ -14,6 +16,17 @@ namespace App
         [STAThread]
         static void Main()
         {
+            Crawler crawler = new Crawler();
+            Task.Run(() =>
+            {
+                while (true)
+                { 
+                    crawler.EquenIps();
+                    Thread.Sleep(8000);
+                }
+              
+            });
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

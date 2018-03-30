@@ -8,6 +8,7 @@ using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Model;
@@ -41,26 +42,30 @@ namespace App
         private async void button2_ClickAsync(object sender, EventArgs e)
         {
             button2.Enabled = false;
-            List<Area> areas = arearepsository.GetEntity(p => p.Url != string.Empty).ToList();
+            List<Area> areas = arearepsository.GetEntity(p => p.Url != string.Empty).ToList(); 
             try
             {
+                List<Task> tasks = new List<Task>();
+                TaskFactory factory = new TaskFactory();
                 foreach (var item in areas)
                 {
-                    try
+                    tasks.Add(factory.StartNew(() =>
                     {
                         CrawlShop shop = new CrawlShop();
                         shop.CrawlAll(item);
-                    }
-                    catch (Exception exception)
+
+                    }));
+                    if (tasks.Count > 1)
                     {
-                        log.Error(exception.ToString());
-                        Console.WriteLine(exception);
-                       
+                        tasks = tasks.Where(t => !t.IsCompleted && !t.IsCanceled && !t.IsFaulted).ToList();
+                        Task.WaitAny(tasks.ToArray());
+                        Console.WriteLine(tasks.Count() + "Go  on---------------");
                     }
-                
                 }
+                Task.WaitAll(tasks.ToArray());
+                Console.WriteLine("Over");
                 button2.Enabled = true;
-            }
+            } 
             catch (Exception exception)
             {
                 button2.Enabled = true;
@@ -70,9 +75,9 @@ namespace App
 
 
 
-        private  void Form1_Load(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            List<Area> areas =  SqlHelper.GetEntity<Area>(p => true);
+            List<Area> areas = SqlHelper.GetEntity<Area>(p => true);
 
             foreach (var item in areas.Where(p => p.Url == string.Empty))
             {
@@ -192,6 +197,36 @@ namespace App
         {
             DbContext ctx = new Context();
             ctx.Database.CreateIfNotExists();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < 4; i++)
+            {
+                tasks.Add(new TaskFactory().StartNew(() =>
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        Console.WriteLine("线程数:"+tasks.Count());
+                        Thread.Sleep(1000);
+                    }
+                }));
+
+                if (tasks.Count > 2)
+                {
+                    tasks = tasks.Where(t => !t.IsCompleted && !t.IsCanceled && !t.IsFaulted).ToList();
+                    Task.WaitAny(tasks.ToArray());
+                    Console.WriteLine(tasks.Count() + "Go  on---------------");
+                }
+            } 
+            Task.WaitAll(tasks.ToArray());
+            Console.WriteLine("最后线程数"+tasks.Count());
+        }
+
+        private void Test(object state)
+        {
+
         }
     }
 }
