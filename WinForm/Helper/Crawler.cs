@@ -206,6 +206,18 @@ namespace Helper
             try
             {
 
+                Uri uri = new Uri(ipApiA);
+                System.Net.HttpWebRequest requestA = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(ipApiA);
+                System.Net.HttpWebResponse responseA = (System.Net.HttpWebResponse)requestA.GetResponse();
+                System.IO.Stream stream = responseA.GetResponseStream();
+                System.IO.StreamReader readerA = new System.IO.StreamReader(stream);
+                String iptxt = readerA.ReadToEnd();
+                readerA.Dispose();
+                readerA.Close();
+                string[] ipports = iptxt.Split(new String[] { "\n" }, StringSplitOptions.None);
+                System.Threading.Thread.Sleep(1000);
+
+
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.Method = "Get";
                 request.UserAgent = user_agents[(++index) % user_agents.Count()];
@@ -214,17 +226,15 @@ namespace Helper
                     index = 0;
                 }
 
-                // 代理服务器
-                string proxyHost = "61.132.93.14";
-                string proxyPort = "6445";
-                Thread.Sleep(1000);
-
-                // 代理隧道验证信息
-                string proxyUser = "16FSTHOX";
-                string proxyPass = "422650";
+                string ipport = ipports[(int)(ipports.Length * new Random().Next(0, 1))];
+                System.Net.WebClient client = new System.Net.WebClient();
+                client.Encoding = System.Text.Encoding.GetEncoding("GB2312");
+                // 设置代理
+                System.Net.WebProxy proxy = new System.Net.WebProxy();
+                proxy.Address = new Uri("http://" + ipports[0] + "/");
 
                 // 设置代理服务器
-                WebProxy proxy = new WebProxy(string.Format("{0}:{1}", proxyHost, proxyPort), true);
+
 
 
 
@@ -232,7 +242,6 @@ namespace Helper
                 request.Proxy = proxy;
                 request.AllowAutoRedirect = true;
                 request.KeepAlive = true;
-                request.Proxy.Credentials = new System.Net.NetworkCredential(proxyUser, proxyPass);
                 using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                 {
                     if (response.StatusCode == HttpStatusCode.OK)
